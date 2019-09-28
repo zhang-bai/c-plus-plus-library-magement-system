@@ -23,4 +23,4 @@ class CBook {
     char m_clsbn[NUM1];
     char m_cPrice[NUM2];
     char m_cAuthor[NUM2];
-}
+}; 

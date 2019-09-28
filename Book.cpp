@@ -1,9 +1,10 @@
 #include"Book.h"
-#include<string.h>
+#include<cstring>
 #include<fstream>
 #include<iostream>
 #include<iomanip>
 using namespace std;
+
 CBook::CBook(char *cName,char*clsbn,char*cPrice,char*cAuthor){
     strncpy(m_cName,cName,NUM1);
     strncpy(m_clsbn,clsbn,NUM1);
@@ -37,7 +38,7 @@ void CBook::SetAuthor(char* cAuthor) {
 } 
 
 void CBook::WriteData() {
-    ofstream ofile;            //ä»å†…å­˜åˆ°ç¡¬ç›˜
+    ofstream ofile;            //´ÓÄÚ´æµ½Ó²ÅÌ
     ofile.open("book.dat",ios::binary|ios::app); 
     try {
         ofile.write(m_cName,NUM1);
@@ -47,28 +48,29 @@ void CBook::WriteData() {
     }
     catch(...) {
         throw "file error occurred" ;
-        ofile.close;
+        ofile.close();
     }
-    ofile.close;
+    ofile.close();
 }
 
-void CBook::GetBookFromFIle(int iCount){
+void CBook::GetBookFromFile(int iCount){
     char cName[NUM1];
     char clsbn[NUM1];
     char cPrice[NUM2];
     char cAuthor[NUM2];
-    ifstream ifile;        //ä»ç¡¬ç›˜åˆ°å†…å­˜
+    ifstream ifile;        //´ÓÓ²ÅÌµ½ÄÚ´æ
     ifile.open("book.dat",ios::binary);
     try {
         ifile.seekg(iCount* (NUM1 + NUM1+NUM2 +NUM2),ios::beg);
             /*
-            * seekg å¯¹è¾“å…¥æ–‡ä»¶å®šä½ï¼Œæœ‰ä¸¤ä¸ªå‚æ•°ï¼š
-            * ç¬¬ä¸€ä¸ªï¼šè¡¨ç¤ºåç§»é‡ï¼Œå¯æ­£å¯è´Ÿï¼Œæ­£è¡¨ç¤ºå‘åï¼Œè´Ÿè¡¨ç¤ºå‘å‰
-            * ç¬¬äºŒä¸ªï¼šåç§»çš„åŸºåœ°å€ï¼Œå¯ä»¥æ˜¯ï¼š
-            * ios::beg è¾“å…¥æµçš„å¼€å§‹
-            * ios::cur è¾“å…¥æµçš„å½“å‰ä½ç½®
-            * ios::end è¾“å…¥æµçš„ç»“æŸ
-            * tellgï¼ˆï¼‰å‡½æ•°ä¸éœ€è¦å¸¦å‚æ•°ï¼Œå®ƒè¿”å›å½“å‰å®šä½æŒ‡é’ˆçš„ä½ç½®ï¼Œä¹Ÿä»£è¡¨ç€è¾“å…¥æµçš„å¤§å°ã€‚
+            * seekg ¶ÔÊäÈëÎÄ¼ş¶¨Î»£¬ÓĞÁ½¸ö²ÎÊı£º
+            * µÚÒ»¸ö£º±íÊ¾Æ«ÒÆÁ¿£¬¿ÉÕı¿É¸º£¬Õı±íÊ¾Ïòºó£¬¸º±íÊ¾ÏòÇ°
+            * µÚ¶ş¸ö£ºÆ«ÒÆµÄ»ùµØÖ·£¬¿ÉÒÔÊÇ£º
+            * ios::beg ÊäÈëÁ÷µÄ¿ªÊ¼
+            * ios::cur ÊäÈëÁ÷µÄµ±Ç°Î»ÖÃ
+            * ios::end ÊäÈëÁ÷µÄ½áÊø
+            * 
+            * tellg£¨£©º¯Êı²»ĞèÒª´ø²ÎÊı£¬Ëü·µ»Øµ±Ç°¶¨Î»Ö¸ÕëµÄÎ»ÖÃ£¬Ò²´ú±í×ÅÊäÈëÁ÷µÄ´óĞ¡¡£
             */
         ifile.read(cName,NUM1);
         if(ifile.tellg()>0 ) {
@@ -81,7 +83,7 @@ void CBook::GetBookFromFIle(int iCount){
         if(ifile.tellg() > 0) 
             strncpy(m_cPrice,cPrice,NUM2);
         ifile.read(cAuthor,NUM2);
-        if(ifile.tellg>0)
+        if(ifile.tellg()>0)
             strncpy(m_cAuthor,cAuthor,NUM2);
     }
     catch(...) {
@@ -91,6 +93,57 @@ void CBook::GetBookFromFIle(int iCount){
     ifile.close();
 }
 
-void CBook::DeleteData() {
-    xxxxxxxx
+void CBook::DeleteData(int iCount) {
+    long respos;
+    int iDataCount=0;
+    fstream file;
+    fstream tmpfile;
+    ofstream ofile;
+    char cTempBuf[NUM1+NUM1+NUM2+NUM2];
+    file.open("book.dat",ios::binary|ios::in|ios::out);
+    tmpfile.open("temp.dat",ios::binary|ios::in|ios::out|ios::trunc);
+    /*
+    fstream¶ÔÏó¿ÉÒÔÍ¬Ê±¾ßÓĞifstreamºÍofstreamµÄ¹¦ÄÜ
+    ³£¼ûµÄ´ò¿ªÄ£Ê½:
+    ios::in¨C´ò¿ªÒ»¸ö¿É¶ÁÈ¡ÎÄ¼ş
+    ios::out¨C´ò¿ªÒ»¸ö¿ÉĞ´ÈëÎÄ¼ş
+    ios:binary ¨CÒÔ¶ş½øÖÆµÄĞÎÊ½´ò¿ªÒ»¸öÎÄ¼ş¡£
+    ios::app ¨CĞ´ÈëµÄËùÓĞÊı¾İ½«±»×·¼Óµ½ÎÄ¼şµÄÄ©Î²
+    ios::trunk ¨CÉ¾³ıÎÄ¼şÔ­À´ÒÑ´æÔÚµÄÄÚÈİ
+    ios::nocreate ¨CÈç¹ûÒª´ò¿ªµÄÎÄ¼ş²¢²»´æÔÚ£¬ÄÇÃ´ÒÔ´ËÈşÊıµ÷ÓÃopenº¯Êı½«ÎŞ·¨½øĞĞ¡£
+    ios:noreplece ¨CÈç¹ûÒª´ò¿ªµÄÎÄ¼şÒÑ´æÔÚ£¬ÊÔÍ¼ÓÃopenº¯Êı´ò¿ªÊ±½«·µ»ØÒ»¸ö´íÎó¡£
+    */
+    file.seekg(0,ios::end);
+    respos=file.tellg();
+    iDataCount=respos/(NUM1+NUM1+NUM2+NUM2);  //  Í¼Êé¼ÇÂ¼ÊıÁ¿
+    if (iCount<0 && iCount > iDataCount) {
+        throw "Input number error";
+    }
+    else {
+        file.seekg((iCount)*(NUM1+NUM1+NUM2+NUM2),ios::beg);
+        for(int j=0;j<(iDataCount - iCount);j++){
+            memset(cTempBuf,0,NUM1+NUM1+NUM2+NUM2);
+            file.read(cTempBuf,NUM1+NUM1+NUM2+NUM2);
+            tmpfile.write(cTempBuf,NUM1+NUM1+NUM2+NUM2);
+        }
+        file.close();
+        tmpfile.seekg(0,ios::beg);
+        ofile.open("book.dat");
+        ofile.seekp((iCount-1)*(NUM1+NUM1+NUM2+NUM2),ios::beg);
+        /*
+        seekp£ºÉèÖÃÊä³öÎÄ¼şÁ÷µÄÎÄ¼şÁ÷Ö¸ÕëÎ»ÖÃ
+        seekg£ºÉèÖÃÊäÈëÎÄ¼şÁ÷µÄÎÄ¼şÁ÷Ö¸ÕëÎ»ÖÃ
+        */
+        for(int i=0;i<(iDataCount - iCount);i++) {
+            memset(cTempBuf,0,NUM1+NUM1+NUM2+NUM2);
+            tmpfile.read(cTempBuf,NUM1+NUM1+NUM2+NUM2);
+            ofile.write(cTempBuf,NUM1+NUM1+NUM2+NUM2);
+        }
+    }
+    tmpfile.close();
+    ofile.close();
+    remove("temp.dat");
 }
+
+
+
